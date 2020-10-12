@@ -1,16 +1,18 @@
-import * as core from '@actions/core';
-import { ToolsDirectory } from './toolsDirectory';
-import * as dotnet from './dotnet';
-import * as cake from './cake';
-import { CakeArgument } from './cakeParameter';
+import * as core from "@actions/core";
+import { ToolsDirectory } from "./toolsDirectory";
+import * as dotnet from "./dotnet";
+import * as cake from "./cake";
+import { CakeArgument } from "./cakeParameter";
+import yargsParser from "yargs-parser";
 
 export async function run() {
   try {
-    const scriptPath = core.getInput('script-path');
-    const version = core.getInput('cake-version');
-    const bootstrap = (core.getInput('cake-bootstrap') || '').toLowerCase() === 'true';
-    const target = new CakeArgument('target', core.getInput('target'));
-    const verbosity = new CakeArgument('verbosity', core.getInput('verbosity'));
+    const scriptPath = core.getInput("script-path");
+    const version = core.getInput("cake-version");
+    const bootstrap =
+      (core.getInput("cake-bootstrap") || "").toLowerCase() === "true";
+    const target = new CakeArgument("target", core.getInput("target"));
+    const verbosity = new CakeArgument("verbosity", core.getInput("verbosity"));
     const scriptArguments = getScriptArguments();
 
     const toolsDir = new ToolsDirectory();
@@ -25,7 +27,13 @@ export async function run() {
       await cake.bootstrapScript(scriptPath, toolsDir);
     }
 
-    await cake.runScript(scriptPath, toolsDir, target, verbosity, ...scriptArguments);
+    await cake.runScript(
+      scriptPath,
+      toolsDir,
+      target,
+      verbosity,
+      ...scriptArguments
+    );
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -33,13 +41,23 @@ export async function run() {
 
 function getScriptArguments(): CakeArgument[] {
   const result: CakeArgument[] = [];
-  const input: any = core.getInput('script-arguments');
-  const argumentsKeys: string[] = Object.keys(input);
+  const input: string = core.getInput("script-arguments");
+  if (!input) {
+    return [];
+  }
 
-  argumentsKeys.map(argumentKey => {
-      const cakeArgument = new CakeArgument('argumentKey', input[argumentKey]);
-      result.push(cakeArgument);
+  const options = yargsParser(input);
+  const optionsKeys: string[] = Object.keys(options);
+  optionsKeys.forEach((optionsKey) => {
+    // we ignore that because of yargs-parser implementation
+    if (optionsKey === "_") { 
+      return;
+    }
+
+    const cakeArgument = new CakeArgument(optionsKey, options[optionsKey]);
+    result.push(cakeArgument);
   });
+  
   return result;
 }
 

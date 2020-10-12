@@ -24,7 +24,7 @@ inputs:
     required: false
     default: 'false'
   script-arguments:
-    description: 'Additional arguments that will be passes to runner.'
+    description: 'Additional arguments that will be passes to runner. Arguments should be passed in format `--name=value`'
     required: false
     default: ''
 runs:
