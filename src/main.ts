@@ -11,6 +11,7 @@ export async function run() {
     const bootstrap = (core.getInput('cake-bootstrap') || '').toLowerCase() === 'true';
     const target = new CakeArgument('target', core.getInput('target'));
     const verbosity = new CakeArgument('verbosity', core.getInput('verbosity'));
+    const scriptArguments = getScriptArguments();
 
     const toolsDir = new ToolsDirectory();
     toolsDir.create();
@@ -24,10 +25,22 @@ export async function run() {
       await cake.bootstrapScript(scriptPath, toolsDir);
     }
 
-    await cake.runScript(scriptPath, toolsDir, target, verbosity);
+    await cake.runScript(scriptPath, toolsDir, target, verbosity, ...scriptArguments);
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+function getScriptArguments(): CakeArgument[] {
+  const result: CakeArgument[] = [];
+  const input: any = core.getInput('script-arguments');
+  const argumentsKeys: string[] = Object.keys(input);
+
+  argumentsKeys.map(argumentKey => {
+      const cakeArgument = new CakeArgument('argumentKey', input[argumentKey]);
+      result.push(cakeArgument);
+  });
+  return result;
 }
 
 run();
