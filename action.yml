@@ -26,7 +26,7 @@ inputs:
   script-arguments:
     description: 'Additional arguments that will be passes to runner.'
     required: false
-    default: {}
+    default: ''
 runs:
   using: 'node12'
   main: 'dist/index.js'
