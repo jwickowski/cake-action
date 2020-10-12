@@ -12,7 +12,7 @@ export async function run() {
       (core.getInput("cake-bootstrap") || "").toLowerCase() === "true";
     const target = new CakeArgument("target", core.getInput("target"));
     const verbosity = new CakeArgument("verbosity", core.getInput("verbosity"));
-    const scriptArgs = new CakeArgument("scriptArguments", core.getInput("script-arguments"));
+    const scriptArgs = new CakeArgument("ScriptArgs", core.getInput("script-arguments"));
 
     const toolsDir = new ToolsDirectory();
     toolsDir.create();

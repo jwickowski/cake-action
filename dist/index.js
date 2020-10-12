@@ -1062,7 +1062,7 @@ function run() {
             const bootstrap = (core.getInput("cake-bootstrap") || "").toLowerCase() === "true";
             const target = new cakeParameter_1.CakeArgument("target", core.getInput("target"));
             const verbosity = new cakeParameter_1.CakeArgument("verbosity", core.getInput("verbosity"));
-            const scriptArgs = new cakeParameter_1.CakeArgument("scriptArguments", core.getInput("script-arguments"));
+            const scriptArgs = new cakeParameter_1.CakeArgument("ScriptArgs", core.getInput("script-arguments"));
             const toolsDir = new toolsDirectory_1.ToolsDirectory();
             toolsDir.create();
             dotnet.disableTelemetry();
